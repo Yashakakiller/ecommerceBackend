@@ -7,7 +7,7 @@ const { userRouter } = require("./routes/UserRoutes");
 const { categoryRouter } = require("./routes/CategoryRoutes");
 const { productRouter } = require("./routes/ProductRoutes");
 const Product = require("./database/models/ProductModel");
-
+const PORT = process.env.PORT || 5000
 
 
 dotenv.config();
@@ -33,6 +33,6 @@ app.use("/accounts/user",userRouter)
 app.use("/categories",categoryRouter)
 app.use("/products",productRouter)
 
-app.listen(process.env.PORT , ()=>{
+app.listen(PORT , ()=>{
     console.log("server started")
 })
