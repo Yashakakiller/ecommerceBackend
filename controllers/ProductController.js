@@ -101,7 +101,15 @@ const randomProduct = async (req, res) => {
 
 
 
-
+// fetch single product by name and id
+const singleProduct = async (req,res) => {
+  const {id} = req.params ;
+  const checkProduct = await Product.findOne({_id:id});
+  if(!checkProduct){
+    return res.json({success:false , message:"No product found"});
+  }
+  res.json({success:true , product:checkProduct})
+}
 
 
 
@@ -111,5 +119,6 @@ module.exports = {
   createProduct,
   deleteProduct,
   allProducts,
-  randomProduct
+  randomProduct,
+  singleProduct
 }
