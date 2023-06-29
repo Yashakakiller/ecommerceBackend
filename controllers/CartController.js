@@ -6,7 +6,7 @@ const addToCart = async (req, res) => {
   try {
     const { id } = req.params;
     const { _id, quantity } =await req.body;
-    console.log(quantity);
+   // console.log(quantity);
     const userCheck = await User.findById(id);
     if (!userCheck) {
       return res.json({ success: false, message: "User Not Found" });
@@ -60,7 +60,7 @@ const deleteFromCart = async (req, res) => {
     try {
       const { id } = req.params;
       const { _id, quantity } = req.body;
-      console.log(req.body);
+     // console.log(req.body);
       const user = await User.findOne({ _id: id });
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
