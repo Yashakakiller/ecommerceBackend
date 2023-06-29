@@ -7,7 +7,7 @@ const addToCart = async (req, res) => {
     const { id } = req.params;
     const { _id, quantity } =await req.body;
    // console.log(quantity);
-    const userCheck = await User.findById(id).maxTimeMS(50000);
+    const userCheck = await User.findById(id).maxTimeMS(20000);
     if (!userCheck) {
       return res.json({ success: false, message: "User Not Found" });
     }
@@ -35,7 +35,7 @@ const deleteFromCart = async (req, res) => {
       const { id } = req.params;
       const { _id } = await req.body;
       
-      const userCheck = await User.findById(id).maxTimeMS(50000);
+      const userCheck = await User.findById(id).maxTimeMS(20000);
       if (!userCheck) {
         return res.json({ success: false, message: 'User Not Found' });
       }
@@ -61,11 +61,11 @@ const deleteFromCart = async (req, res) => {
       const { id } = req.params;
       const { _id, quantity } = req.body;
      // console.log(req.body);
-      const user = await User.findOne({ _id: id }).maxTimeMS(50000);
+      const user = await User.findOne({ _id: id }).maxTimeMS(20000);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-      const productCheck = await Product.findById(_id).maxTimeMS(50000);
+      const productCheck = await Product.findById(_id).maxTimeMS(20000);
       if (!productCheck) {
         return res.json({ success: false, message: 'Product not found with this id' });
       }

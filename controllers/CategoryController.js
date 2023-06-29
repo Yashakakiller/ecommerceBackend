@@ -4,7 +4,7 @@ const Category = require("../database/models/CategoryModel");
 
 // get all categories
 const getAllCategories = async (req,res) => {
-    const categories = await Category.find({}).maxTimeMS(50000)
+    const categories = await Category.find({}).maxTimeMS(20000)
     res.json({categories})
 }
 
@@ -15,7 +15,7 @@ const getAllCategories = async (req,res) => {
 const createCategory = async (req, res) => {
     const { name , img , desc} = req.body;
   
-    const categoryCheck = await Category.findOne({ name }).maxTimeMS(50000);
+    const categoryCheck = await Category.findOne({ name }).maxTimeMS(20000);
     if (categoryCheck) {
       return res.json({ success: false, message: 'Category already exists' });
     }
@@ -31,7 +31,7 @@ const createCategory = async (req, res) => {
 // fetch a single category
 const singleCategory = async (req, res) => {
     const { id } = req.params;
-    const categoryCheck = await Category.findOne({ _id: id }).maxTimeMS(50000);
+    const categoryCheck = await Category.findOne({ _id: id }).maxTimeMS(20000);
     
     if (!categoryCheck) {
       return res.json({ success: false, message: "No Category Found!!!" });
