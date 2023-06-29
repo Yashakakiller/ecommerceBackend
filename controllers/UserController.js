@@ -96,7 +96,7 @@ const updateUser = async (req, res) => {
             return res.json({ message: "User Not Found" });
         }
 
-        const { firstName,lastName, email, phone, address ,img } = req.body;
+        const { firstName,lastName, email, phone, address ,img ,gender} = req.body;
 
         await User.updateOne({ _id: id }, { $set: { firstName,lastName,img, email,gender, phone, address } });
 
@@ -174,6 +174,46 @@ const loginUserDetail = async (req, res) => {
 
 
 
+
+
+
+
+// user image related functions
+const imagePost = async (req, res) => {
+    try {
+      const { id, img } = req.body;
+  
+      const user = await User.findById(id);
+      if (!user) {
+        return res.json({ message: "User Not Found" });
+      }
+  
+      await User.updateOne({ _id: id }, { $set: { img } });
+  
+      res.json({success:true , message: "User Image Updated Successfully" });
+    } catch (error) {
+      if (error.name === "CastError") {
+        return res.json({ message: "Invalid User Id" });
+      }
+      res.status(500).send("Internal Server Error");
+    }
+  }; 
+const imageGet = async (req, res) => {
+    try {
+      const { id } = req.body;
+      const user = await User.findById(id);
+      if (!user) {
+        return res.json({ success: false, message: "User not found" });
+      }
+  
+      res.json(user.img);
+    } catch (error) {
+      res.json({ message: "Error", error });
+    }
+  };
+  
+
+
 module.exports = {
     allUsers,
     createUser,
@@ -181,5 +221,7 @@ module.exports = {
     updateUser,
     singleUser,
     userLogin,
-    loginUserDetail
+    loginUserDetail,
+    imagePost,
+    imageGet
 }

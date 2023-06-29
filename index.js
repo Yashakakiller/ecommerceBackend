@@ -6,7 +6,8 @@ const { Connection } = require("./database/db");
 const { userRouter } = require("./routes/UserRoutes");
 const { categoryRouter } = require("./routes/CategoryRoutes");
 const { productRouter } = require("./routes/ProductRoutes");
-const Product = require("./database/models/ProductModel");
+const { wishlistRouter } = require("./routes/WishlistRouter");
+const { cartRouter } = require("./routes/CartRouter");
 const PORT = process.env.PORT || 5000
 
 
@@ -16,7 +17,7 @@ const app = express();
 
 
 
-app.use(bodyparser.json({extended:true}))
+app.use(bodyparser.json({extended:true , limit:"10mb"}))
 app.use(bodyparser.urlencoded({extended:true}))
 app.use(cors())
 
@@ -32,7 +33,10 @@ app.use(cors())
 app.use("/accounts/user",userRouter)
 app.use("/categories",categoryRouter)
 app.use("/products",productRouter)
+app.use("/wishlist",wishlistRouter)
+app.use("/cart",cartRouter)
+
 
 app.listen(PORT , ()=>{
-    console.log("server started")
+    console.log("server started" + PORT)
 })

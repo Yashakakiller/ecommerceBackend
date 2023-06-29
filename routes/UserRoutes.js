@@ -1,5 +1,5 @@
 const express = require("express");
-const { allUsers , createUser , deleteUser , updateUser , singleUser , userLogin, loginUserDetail} = require("../controllers/UserController");
+const {imageGet,imagePost, allUsers , createUser , deleteUser , updateUser , singleUser , userLogin, loginUserDetail, updateImageUser} = require("../controllers/UserController");
 const { validation } = require("../controllers/Validation");
 const userRouter = express.Router() ;
 
@@ -23,6 +23,14 @@ userRouter.get("/singleuser/:id",singleUser)
 userRouter.post("/auth/login",userLogin)
 userRouter.post("/auth/user/details",loginUserDetail)
 
+
+// userRouter.post("/api/data",updateImageUser)
+
+
+
+userRouter.post("/",imagePost)
+
+userRouter.post("/get",imageGet)
 
 module.exports = {
     userRouter

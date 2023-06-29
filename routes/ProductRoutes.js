@@ -1,5 +1,5 @@
 const express = require("express");
-const { createProduct, getProductsByCategory, deleteProduct, allProducts, randomProduct, singleProduct } = require("../controllers/ProductController");
+const { createProduct, getProductsByCategory, deleteProduct, allProducts, randomProduct, singleProduct, relatedProducts, searchProduct } = require("../controllers/ProductController");
 const productRouter = express.Router()
 
 
@@ -23,8 +23,20 @@ productRouter.get("/allproducts",allProducts)
 productRouter.get("/bestDeal/product",randomProduct)
 
 
-// route for getting single product
+// route for getting single product by id
 productRouter.get("/product/:id",singleProduct)
+
+
+// route for getting related products
+productRouter.get("/byname/:id",relatedProducts)
+
+
+
+// route for searching a product by name
+productRouter.get("/searchproduct/name",searchProduct)
+
+
+
 
 module.exports = {
     productRouter

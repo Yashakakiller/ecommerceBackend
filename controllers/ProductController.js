@@ -2,9 +2,13 @@ const Product = require("../database/models/ProductModel")
 const Category = require("../database/models/CategoryModel");
 
 
+
+
+
+
 // Create a new product and associate it with a category
 const createProduct = async (req, res) => {
-  const { category, name, price, img , title , desc } = req.body;
+  const { category, name, price, img ,quantity} = req.body;
 
   try {
     const categoryCheck = await Category.findOne({ name: category });
@@ -15,12 +19,14 @@ const createProduct = async (req, res) => {
     if(productCheck){
       return res.json({success:false , message:"Product is already there "})
     }
-    const newProduct = await Product.create({ category: categoryCheck, name, price , img , title , desc });
+    const newProduct = await Product.create({ category: categoryCheck, name, price , img,quantity});
     res.status(200).json({ success: true, product: newProduct, message: 'New Product created' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error creating product' });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 
 
 
@@ -30,17 +36,27 @@ const createProduct = async (req, res) => {
 
 // Get all products with their associated category
 const getProductsByCategory = async (req, res) => {
-  const { category } = req.query;
+  const { category,page  } = req.query;
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = 10;
+
   try {
     const categoryCheck = await Category.findOne({ name: category });
     if (!categoryCheck) {
       return res.json({ success: false, message: 'Category not found' });
     }
-    const products = await Product.find({ category: categoryCheck._id });
 
-    res.status(200).json({ success: true, products });
+    const filterProducts = { category: categoryCheck._id };
+    const totalCount = await Product.countDocuments(filterProducts);
+    const totalPages = Math.ceil(totalCount / limitNumber);
+
+    const products = await Product.find(filterProducts)
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+    res.json({ success: true, products, totalPages });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error retrieving products by category' });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -49,8 +65,12 @@ const getProductsByCategory = async (req, res) => {
 
 
 
+
+
+
 // delete a product
 const deleteProduct = async (req, res) => {
+  try {
   const { id } = req.params;
   const product = await Product.findById(id);
   if (!product) {
@@ -58,7 +78,14 @@ const deleteProduct = async (req, res) => {
   }
   await Product.findByIdAndDelete(id);
   res.status(200).json({ success: true, message: "Product Deleted Successfully" })
+    
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 }
+
+
+
 
 
 
@@ -67,12 +94,20 @@ const deleteProduct = async (req, res) => {
 
 //fetching all products
 const allProducts = async (req, res) => {
+  try {
   const products = await Product.find({})
   if (!products) {
     return res.json({ success: false, message: "No Products Found" })
   }
   res.json({ success: true, products })
+    
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 }
+
+
+
 
 
 
@@ -81,6 +116,7 @@ const allProducts = async (req, res) => {
 
 // random product from random category
 const randomProduct = async (req, res) => {
+  try {
   const categories = await Category.find({}); // get all categories
   const randomProducts = [];// store random products here
 
@@ -94,22 +130,87 @@ const randomProduct = async (req, res) => {
     randomProducts.push(randomProduct);
   }
 
-  res.json({ randomProducts });
+  res.json({ randomProducts });    
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 
 
 
 
-// fetch single product by name and id
+
+
+
+
+// fetch single product by id
 const singleProduct = async (req,res) => {
+  try {
   const {id} = req.params ;
   const checkProduct = await Product.findById(id);
   if(!checkProduct){
     return res.json({success:false , message:"No product found"});
   }
   res.json({success:true , product:checkProduct})
+    
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 }
+
+
+
+
+
+
+
+
+
+const relatedProducts = async (req,res) => {
+  try {
+    const {id} = req.params;
+  const checkProduct = await Product.findById(id);
+  if(!checkProduct){
+    return res.json({success:false , message:"No product found"});
+  }
+  const relatedProducts = await Product.find({ _id: { $ne: id } ,category:checkProduct.category});
+  res.json({success:true,relatedProducts})
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+const searchProduct = async (req, res) => {
+  const { query } = req.query;
+  try {
+    const regex = new RegExp(query, 'i');
+    const products = await Product.find({ name: regex });
+    res.status(200).json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+
+
+
+
+
+
 
 
 
@@ -120,5 +221,7 @@ module.exports = {
   deleteProduct,
   allProducts,
   randomProduct,
-  singleProduct
+  singleProduct,
+  relatedProducts,
+  searchProduct
 }
