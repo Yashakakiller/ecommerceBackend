@@ -95,7 +95,7 @@ const deleteProduct = async (req, res) => {
 //fetching all products
 const allProducts = async (req, res) => {
   try {
-  const products = await Product.find({})
+  const products = await Product.find({}).maxTimeMS(50000)
   if (!products) {
     return res.json({ success: false, message: "No Products Found" })
   }
