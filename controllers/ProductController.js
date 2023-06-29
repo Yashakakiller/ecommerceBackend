@@ -11,11 +11,11 @@ const createProduct = async (req, res) => {
   const { category, name, price, img ,quantity} = req.body;
 
   try {
-    const categoryCheck = await Category.findOne({ name: category });
+    const categoryCheck = await Category.findOne({ name: category }).maxTimeMS(50000);
     if (!categoryCheck) {
       return res.json({ success: false, message: 'Category not found' });
     }
-    const productCheck = await Product.findOne({name})
+    const productCheck = await Product.findOne({name}).maxTimeMS(50000)
     if(productCheck){
       return res.json({success:false , message:"Product is already there "})
     }
@@ -41,7 +41,7 @@ const getProductsByCategory = async (req, res) => {
   const limitNumber = 10;
 
   try {
-    const categoryCheck = await Category.findOne({ name: category });
+    const categoryCheck = await Category.findOne({ name: category }).maxTimeMS(50000);
     if (!categoryCheck) {
       return res.json({ success: false, message: 'Category not found' });
     }
@@ -52,7 +52,7 @@ const getProductsByCategory = async (req, res) => {
 
     const products = await Product.find(filterProducts)
       .skip((pageNumber - 1) * limitNumber)
-      .limit(limitNumber);
+      .limit(limitNumber).maxTimeMS(50000);
 
     res.json({ success: true, products, totalPages });
   } catch (error) {
@@ -72,11 +72,11 @@ const getProductsByCategory = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
   const { id } = req.params;
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).maxTimeMS(50000);
   if (!product) {
     return res.json({ success: false, message: "Product Not Found" })
   }
-  await Product.findByIdAndDelete(id);
+  await Product.findByIdAndDelete(id).maxTimeMS(50000);
   res.status(200).json({ success: true, message: "Product Deleted Successfully" })
     
   } catch (error) {
@@ -117,12 +117,12 @@ const allProducts = async (req, res) => {
 // random product from random category
 const randomProduct = async (req, res) => {
   try {
-  const categories = await Category.find({}); // get all categories
+  const categories = await Category.find({}).maxTimeMS(50000); // get all categories
   const randomProducts = [];// store random products here
 
   for (const category of categories) {
     // Get all products in the current category
-    const productsInCategory = await Product.find({ category: category._id });
+    const productsInCategory = await Product.find({ category: category._id }).maxTimeMS(50000);
 
     // Get a random product from the products in the current category
     const randomProduct = productsInCategory[Math.floor(Math.random() * productsInCategory.length)];
@@ -148,7 +148,7 @@ const randomProduct = async (req, res) => {
 const singleProduct = async (req,res) => {
   try {
   const {id} = req.params ;
-  const checkProduct = await Product.findById(id);
+  const checkProduct = await Product.findById(id).maxTimeMS(50000);
   if(!checkProduct){
     return res.json({success:false , message:"No product found"});
   }
@@ -170,11 +170,11 @@ const singleProduct = async (req,res) => {
 const relatedProducts = async (req,res) => {
   try {
     const {id} = req.params;
-  const checkProduct = await Product.findById(id);
+  const checkProduct = await Product.findById(id).maxTimeMS(50000);
   if(!checkProduct){
     return res.json({success:false , message:"No product found"});
   }
-  const relatedProducts = await Product.find({ _id: { $ne: id } ,category:checkProduct.category});
+  const relatedProducts = await Product.find({ _id: { $ne: id } ,category:checkProduct.category}).maxTimeMS(50000);
   res.json({success:true,relatedProducts})
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -196,7 +196,7 @@ const searchProduct = async (req, res) => {
   const { query } = req.query;
   try {
     const regex = new RegExp(query, 'i');
-    const products = await Product.find({ name: regex });
+    const products = await Product.find({ name: regex }).maxTimeMS(50000);
     res.status(200).json({ success: true, products });
   } catch (error) {
     res.status(500).json({ message: error.message });

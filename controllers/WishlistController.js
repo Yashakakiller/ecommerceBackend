@@ -5,7 +5,7 @@ const addToWishlist = async (req, res) => {
       const { id } = req.params;
       const productId = req.body._id;
   
-      const user = await User.findById(id);
+      const user = await User.findById(id).maxTimeMS(50000);
       if (!user) {
         return res.json({ success: false, message: "User not found" });
       }
@@ -31,7 +31,7 @@ const addToWishlist = async (req, res) => {
       const { id } = req.params;
       const { _id } = await req.body;
       
-      const userCheck = await User.findById(id);
+      const userCheck = await User.findById(id).maxTimeMS(50000);
       if (!userCheck) {
         return res.json({ success: false, message: 'User Not Found' });
       }

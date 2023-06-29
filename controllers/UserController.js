@@ -7,7 +7,7 @@ const { validationResult } = require("express-validator");
 // fetch all users
 const allUsers = async (req, res) => {
     try {
-        const users = await User.find({});
+        const users = await User.find({}).maxTimeMS(50000);
         res.json(users)
     } catch (error) {
         res.status(400).json({ message: "Some Internal Server Problem" })
@@ -28,7 +28,7 @@ const createUser = async (req, res) => {
     const { firstName,lastName, email, address,gender, phone, password,img } = await req.body;
 
     try {
-        const userCheck = await User.findOne({ email });
+        const userCheck = await User.findOne({ email }).maxTimeMS(50000);
         if (userCheck) {
             return res.json({success:false , message: 'Email already exists' });
         }
@@ -67,12 +67,12 @@ const deleteUser = async (req, res) => {
     try {
       const { id } = req.params;
   
-      const user = await User.findById({_id:id});
+      const user = await User.findById({_id:id}).maxTimeMS(50000);
       if (!user) {
         return res.json({ message: "User not found" });
       }
   
-      await User.findByIdAndDelete(id);
+      await User.findByIdAndDelete(id).maxTimeMS(50000);
   
       res.json({ message: "User Deleted Successfully" });
     } catch (error) {
@@ -91,7 +91,7 @@ const updateUser = async (req, res) => {
     try {
         const id = await req.params.id;
 
-        const user = await User.findById(id);
+        const user = await User.findById(id).maxTimeMS(50000);
         if (!user) {
             return res.json({ message: "User Not Found" });
         }
@@ -118,7 +118,7 @@ const updateUser = async (req, res) => {
 const singleUser = async (req, res) => {
     try {
         const { id } = await req.params;
-        const user = await User.find({ _id: id })
+        const user = await User.find({ _id: id }).maxTimeMS(50000)
         res.json(user)
     } catch (error) {
         res.status(500).send("Internal Server Error");
@@ -133,7 +133,7 @@ const singleUser = async (req, res) => {
 const userLogin = async (req, res) => {
     try {
         const { email, password } = await req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).maxTimeMS(50000);
         if (!user) {
             return res.json({ success:false,message: "User Not Found" });
         }
@@ -162,7 +162,7 @@ const loginUserDetail = async (req, res) => {
         const {token} = await req.headers
         const user = jwt.verify(token , process.env.JWT_SECRET_KEY);
         const userEmail = user.email ;
-        const userData = await User.findOne({email:userEmail});
+        const userData = await User.findOne({email:userEmail}).maxTimeMS(50000);
         if(!userData){
             return res.json({message:"please enter valid token"})
         }
@@ -183,7 +183,7 @@ const imagePost = async (req, res) => {
     try {
       const { id, img } = req.body;
   
-      const user = await User.findById(id);
+      const user = await User.findById(id).maxTimeMS(50000);
       if (!user) {
         return res.json({ message: "User Not Found" });
       }
@@ -201,7 +201,7 @@ const imagePost = async (req, res) => {
 const imageGet = async (req, res) => {
     try {
       const { id } = req.body;
-      const user = await User.findById(id);
+      const user = await User.findById(id).maxTimeMS(50000);
       if (!user) {
         return res.json({ success: false, message: "User not found" });
       }
