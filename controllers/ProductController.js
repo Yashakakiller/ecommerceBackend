@@ -29,7 +29,10 @@ const createProduct = async (req, res) => {
 
 
 
-
+const tryProduct = async(req,res) => {
+  const products = await Product.find().skip(5).limit(10);
+  res.json(products);
+}
 
 
 
@@ -223,5 +226,6 @@ module.exports = {
   randomProduct,
   singleProduct,
   relatedProducts,
-  searchProduct
+  searchProduct,
+  tryProduct
 }
