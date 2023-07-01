@@ -30,7 +30,7 @@ const createProduct = async (req, res) => {
 
 
 const tryProduct = async(req,res) => {
-  const products = await Product.find().skip(5).limit(10);
+  const products = await Product.find().skip(5).limit(10).maxTimeMS(20000);
   res.json(products);
 }
 
