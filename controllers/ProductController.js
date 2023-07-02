@@ -8,7 +8,7 @@ const fs = require("fs");
 
 // Create a new product and associate it with a category
 const createProduct = async (req, res) => {
-  const { category, name, price, img ,quantity} = req.body;
+  const { category, name, price, img ,quantity} = await req.body;
 
   const relatedImages = [];// array to store base 64 images
 
