@@ -97,13 +97,20 @@ const deleteProduct = async (req, res) => {
 
 //fetching all products
 const allProducts = async (req, res) => {
+  const { page  } = req.query;
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = 10;
+
   try {
-  const products = await Product.find({}).maxTimeMS(20000)
-  if (!products) {
-    return res.json({ success: false, message: "No Products Found" })
-  }
-  res.json({ success: true, products })
     
+    const totalCount = await Product.countDocuments();
+    const totalPages = Math.ceil(totalCount / limitNumber);
+
+    const products = await Product.find()
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber).maxTimeMS(20000);
+
+    res.json({ success: true, products, totalPages });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
