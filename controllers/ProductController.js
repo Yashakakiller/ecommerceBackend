@@ -1,6 +1,5 @@
 const Product = require("../database/models/ProductModel")
 const Category = require("../database/models/CategoryModel");
-const fs = require("fs");
 
 
 
@@ -8,34 +7,28 @@ const fs = require("fs");
 
 // Create a new product and associate it with a category
 const createProduct = async (req, res) => {
-  const { category, name, price, img ,quantity} = await req.body;
+  const { category, name,desc,img, price, quantity ,relatedImages} = await req.body;
 
-  const relatedImages = [];// array to store base 64 images
 
   try {
     const categoryCheck = await Category.findOne({ name: category }).maxTimeMS(20000);
     if (!categoryCheck) {
       return res.json({ success: false, message: 'Category not found' });
     }
-    const productCheck = await Product.findOne({name}).maxTimeMS(20000)
-    if(productCheck){
-      return res.json({success:false , message:"Product is already there "})
-    }
 
-    
-    // Assuming you are sending the images in the 'images' field of the request
-    for (const image of await req.files) {
-      const data = fs.readFileSync(image.path);
-      const base64Image = data.toString('base64');
-      relatedImages.push(base64Image);
+    const productCheck = await Product.findOne({ name }).maxTimeMS(20000);
+    if (productCheck) {
+      return res.json({ success: false, message: 'Product already exists' });
     }
-
-    const newProduct = await Product.create({ category: categoryCheck, name, price , img,quantity, relatedImages});
+    const newProduct = await Product.create({ category: categoryCheck._id, name, desc ,img ,price, quantity,categoryName:categoryCheck.name,relatedImages });
     res.status(200).json({ success: true, product: newProduct, message: 'New Product created' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+
 
 
 

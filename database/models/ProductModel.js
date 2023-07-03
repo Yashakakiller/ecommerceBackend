@@ -5,6 +5,10 @@ const productSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category'
     },
+    categoryName:{
+      type:String,
+      required:true,
+    },
     img:{
       type:String,
       required:true
@@ -20,8 +24,7 @@ const productSchema = new mongoose.Schema({
   quantity:{
     type:Number,
     required:true
-  },
-  relatedImages:[String]// BASE64 IMAGES
+  }
   
 });
 
