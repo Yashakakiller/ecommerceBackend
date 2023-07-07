@@ -1,5 +1,5 @@
 const express = require("express");
-const { createProduct, getProductsByCategory, deleteProduct, allProducts, randomProduct, singleProduct, relatedProducts, searchProduct, tryProduct } = require("../controllers/ProductController");
+const { createProduct, getProductsByCategory, deleteProduct, allProducts, randomProduct, singleProduct, relatedProducts, searchProduct, newArrivals } = require("../controllers/ProductController");
 const productRouter = express.Router()
 
 
@@ -36,7 +36,7 @@ productRouter.get("/byname/:id",relatedProducts)
 productRouter.get("/searchproduct/name",searchProduct)
 
 
-productRouter.get("/try",tryProduct);
+productRouter.get("/newArrivals",newArrivals);
 
 
 

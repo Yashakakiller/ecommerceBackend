@@ -7,10 +7,11 @@ const Category = require("../database/models/CategoryModel");
 
 // Create a new product and associate it with a category
 const createProduct = async (req, res) => {
-  const { category, name,desc,img, price, quantity ,relatedImages} = await req.body;
+  const { category, name,desc,img, price, quantity ,dateAdded,otherImages } = await req.body;
 
 
   try {
+    const customDate = new Date(dateAdded);
     const categoryCheck = await Category.findOne({ name: category }).maxTimeMS(20000);
     if (!categoryCheck) {
       return res.json({ success: false, message: 'Category not found' });
@@ -20,7 +21,7 @@ const createProduct = async (req, res) => {
     if (productCheck) {
       return res.json({ success: false, message: 'Product already exists' });
     }
-    const newProduct = await Product.create({ category: categoryCheck._id, name, desc ,img ,price, quantity,categoryName:categoryCheck.name,relatedImages });
+    const newProduct = await Product.create({ category: categoryCheck._id, name, desc ,img ,price, quantity,categoryName:categoryCheck.name,dateAdded: customDate,otherImages});
     res.status(200).json({ success: true, product: newProduct, message: 'New Product created' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -33,9 +34,28 @@ const createProduct = async (req, res) => {
 
 
 
-const tryProduct = async(req,res) => {
-  const products = await Product.find().skip(5).limit(10).maxTimeMS(20000);
-  res.json(products);
+const newArrivals = async(req,res) => {
+  try {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  // Query to find products added in the last 7 days
+  const query = {
+    dateAdded: { $gte: sevenDaysAgo }
+  };
+
+  // Find products based on the query
+  Product.find(query)
+    .exec()
+    .then(products => {
+      res.status(200).json({success:true,products});
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message , success:false });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 }
 
 
@@ -131,24 +151,37 @@ const allProducts = async (req, res) => {
 // random product from random category
 const randomProduct = async (req, res) => {
   try {
-  const categories = await Category.find({}).maxTimeMS(20000); // get all categories
-  const randomProducts = [];// store random products here
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  for (const category of categories) {
-    // Get all products in the current category
-    const productsInCategory = await Product.find({ category: category._id }).maxTimeMS(20000);
+   
+    const query = {
+      dateAdded: { $lte: sevenDaysAgo }
+    };
 
-    // Get a random product from the products in the current category
-    const randomProduct = productsInCategory[Math.floor(Math.random() * productsInCategory.length)];
+    const categories = await Category.find({}).maxTimeMS(20000); // Get all categories
+    const randomProducts = []; 
 
-    randomProducts.push(randomProduct);
-  }
+    for (const category of categories) {
 
-  res.json({ randomProducts });    
+      const productsInCategory = await Product.find(
+        { category: category._id, ...query } // Specify the fields you want to include
+      ).maxTimeMS(20000);
+
+      // Check if there are products in the current category
+      if (productsInCategory.length > 0) {
+        // Get a random product from the products in the current category
+        const randomProduct = productsInCategory[Math.floor(Math.random() * productsInCategory.length)];
+        randomProducts.push(randomProduct);
+      }
+    }
+
+    res.json({ randomProducts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 
@@ -238,5 +271,5 @@ module.exports = {
   singleProduct,
   relatedProducts,
   searchProduct,
-  tryProduct
+  newArrivals
 }

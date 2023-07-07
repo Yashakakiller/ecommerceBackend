@@ -51,10 +51,7 @@ const userSchema = mongoose.Schema({
     }
   ],
   orders:[
-    {
-      type:mongoose.Schema.Types.ObjectId,
-      ref:"cart"
-    }
+    {type:String}
   ]
 })
 

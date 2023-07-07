@@ -8,10 +8,10 @@ const { categoryRouter } = require("./routes/CategoryRoutes");
 const { productRouter } = require("./routes/ProductRoutes");
 const { wishlistRouter } = require("./routes/WishlistRouter");
 const { cartRouter } = require("./routes/CartRouter");
-const PORT = process.env.PORT || 5000
 
 
 dotenv.config();
+const PORT = process.env.PORT || 5000
 Connection();
 const app = express();
 

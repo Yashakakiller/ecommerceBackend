@@ -59,7 +59,7 @@ const deleteFromCart = async (req, res) => {
   const placeOrder = async (req, res) => {
     try {
       const { id } = req.params;
-      const { _id, quantity } = req.body;
+      const { _id, quantity } = await req.body;
      // console.log(req.body);
       const user = await User.findOne({ _id: id }).maxTimeMS(20000);
       if (!user) {

@@ -24,7 +24,19 @@ const productSchema = new mongoose.Schema({
   quantity:{
     type:Number,
     required:true
-  }
+  },
+  desc:{
+    type:String,
+    required:true
+  },
+  dateAdded:{
+    type: Date,
+    default: Date.now
+  },
+  otherImages: [{
+    type: String,
+    required: true
+  }]
   
 });
 
