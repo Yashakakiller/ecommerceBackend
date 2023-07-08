@@ -7,7 +7,8 @@ const cartRouter = express.Router();
 
 cartRouter.post("/user/:id",addToCart);
 
-cartRouter.delete("/user/:id",deleteFromCart);
+cartRouter.delete("/user/:id/:productId", deleteFromCart);
+
 
 cartRouter.post("/place_order/:id", placeOrder)
 

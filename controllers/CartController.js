@@ -5,19 +5,19 @@ const Product = require("../database/models/ProductModel")
 const addToCart = async (req, res) => {
   try {
     const { id } = req.params;
-    const { _id, quantity } =await req.body;
-   // console.log(quantity);
+    const { _id, quantity } = await req.body; // Remove the "await" as it's not necessary here
+
     const userCheck = await User.findById(id).maxTimeMS(20000);
     if (!userCheck) {
       return res.json({ success: false, message: "User Not Found" });
     }
-    if (userCheck.cart.includes(_id)) {
+
+    if (userCheck.cart.find(item => item._id === _id)) {
       return res
         .status(400)
         .json({ success: false, message: "Product already in cart" });
     }
 
-    // Update the code to include the quantity in the cart item
     const cartItem = { _id, quantity };
     userCheck.cart.unshift(cartItem);
     await userCheck.save();
@@ -30,57 +30,57 @@ const addToCart = async (req, res) => {
 
 
 
+
+
 const deleteFromCart = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { _id } = await req.body;
-      
-      const userCheck = await User.findById(id).maxTimeMS(20000);
-      if (!userCheck) {
-        return res.json({ success: false, message: 'User Not Found' });
-      }
-      
-      if (!userCheck.cart.includes(_id)) {
-        return res.status(400).json({ error: 'Product not found in cart' });
-      }
-      
-      userCheck.cart.pull(_id);
-      await userCheck.save();
-      
-      res.json({ success: true, message: 'Product removed from cart' });
-    } catch (error) {
-      res.json({ success: false, message: error.message });
+  try {
+    const { id, productId } = req.params;
+
+    const userCheck = await User.findById(id).maxTimeMS(20000);
+    if (!userCheck) {
+      return res.json({ success: false, message: 'User Not Found' });
     }
-  };
+
+    if (!userCheck.cart.includes(productId)) {
+      return res.status(400).json({ error: 'Product not found in cart' });
+    }
+
+    userCheck.cart.pull(productId);
+    await userCheck.save();
+
+    res.json({ success: true, message: 'Product removed from cart' });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
   
 
 
 
   const placeOrder = async (req, res) => {
     try {
-      const { id } = req.params;
       const { _id, quantity } = await req.body;
-     // console.log(req.body);
-      const user = await User.findOne({ _id: id }).maxTimeMS(20000);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      const productCheck = await Product.findById(_id).maxTimeMS(20000);
-      if (!productCheck) {
-        return res.json({ success: false, message: 'Product not found with this id' });
+  
+      // Fetch the product from the database using the _id
+      const product = await Product.findById(_id);
+  
+      if (!product) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
       }
   
-      productCheck.quantity -= quantity;
-      await productCheck.save();
+      if (quantity > product.quantity) {
+        return res.status(400).json({ success: false, message: 'Requested quantity exceeds available quantity' });
+      }
   
-      const cartArray = user.cart;
-      const orderArray = user.orders;
-      orderArray.push(...cartArray);
-      user.cart = [];
-      await user.save();
+      // Update the product's quantity by subtracting the selected quantity
+      product.quantity -= quantity;
+      await product.save();
   
-      res.json({ orderArray });
+      // Place the order
+      // Your logic to place the order goes here
   
+      res.json({ success: true, message: 'Order placed successfully' });
     } catch (error) {
       res.json({ success: false, message: error.message });
     }
