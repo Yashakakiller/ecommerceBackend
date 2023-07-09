@@ -1,6 +1,7 @@
 const express = require("express");
 const {imageGet,imagePost, allUsers , createUser , deleteUser , updateUser , singleUser , userLogin, loginUserDetail, updateImageUser} = require("../controllers/UserController");
 const { validation } = require("../controllers/Validation");
+const User = require("../database/models/UserModel");
 const userRouter = express.Router() ;
 
 // route for fetch all users

@@ -5,20 +5,20 @@ const Product = require("../database/models/ProductModel")
 const addToCart = async (req, res) => {
   try {
     const { id } = req.params;
-    const { _id, quantity } = await req.body; // Remove the "await" as it's not necessary here
+    const { _id, quantity } =await req.body;
 
     const userCheck = await User.findById(id).maxTimeMS(20000);
     if (!userCheck) {
       return res.json({ success: false, message: "User Not Found" });
     }
 
-    if (userCheck.cart.find(item => item._id === _id)) {
+    if (userCheck.cart.find((item) => item.toString() === _id)) {
       return res
         .status(400)
         .json({ success: false, message: "Product already in cart" });
     }
 
-    const cartItem = { _id, quantity };
+    const cartItem = _id;
     userCheck.cart.unshift(cartItem);
     await userCheck.save();
 
@@ -32,20 +32,22 @@ const addToCart = async (req, res) => {
 
 
 
-const deleteFromCart = async (req, res) => {
+
+const deleteFromCart = async (req, res) => {  
   try {
-    const { id, productId } = req.params;
+    const { id, _id } = req.params;
+    console.log(req.params)
 
     const userCheck = await User.findById(id).maxTimeMS(20000);
     if (!userCheck) {
       return res.json({ success: false, message: 'User Not Found' });
     }
 
-    if (!userCheck.cart.includes(productId)) {
+    if (!userCheck.cart.includes(_id)) {
       return res.status(400).json({ error: 'Product not found in cart' });
     }
 
-    userCheck.cart.pull(productId);
+    userCheck.cart.pull(_id);
     await userCheck.save();
 
     res.json({ success: true, message: 'Product removed from cart' });
@@ -54,15 +56,20 @@ const deleteFromCart = async (req, res) => {
   }
 };
 
-  
+
 
 
 
   const placeOrder = async (req, res) => {
     try {
+      const {id} = req.params;
       const { _id, quantity } = await req.body;
+
+      const user = await User.findOne({_id:id});
+      if(!user){
+        return res.json({success:false,message:"user not found"})
+      }
   
-      // Fetch the product from the database using the _id
       const product = await Product.findById(_id);
   
       if (!product) {
@@ -73,12 +80,15 @@ const deleteFromCart = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Requested quantity exceeds available quantity' });
       }
   
-      // Update the product's quantity by subtracting the selected quantity
       product.quantity -= quantity;
       await product.save();
   
-      // Place the order
-      // Your logic to place the order goes here
+      const cartArray = user.cart;
+      const orderArray = user.orders;
+      orderArray.push(...cartArray);
+      user.cart= [];
+      await user.save();
+
   
       res.json({ success: true, message: 'Order placed successfully' });
     } catch (error) {
@@ -88,10 +98,6 @@ const deleteFromCart = async (req, res) => {
   
   
   
-
-
-
-
 
 
 
