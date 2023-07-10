@@ -119,7 +119,7 @@ const singleUser = async (req, res) => {
     try {
         const { id } = await req.params;
         const user = await User.find({ _id: id }).maxTimeMS(20000)
-        res.json(user)
+        res.json({user,success:true})
     } catch (error) {
         res.status(500).send("Internal Server Error");
     }
