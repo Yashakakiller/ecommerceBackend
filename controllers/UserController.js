@@ -166,7 +166,7 @@ const loginUserDetail = async (req, res) => {
         if(!userData){
             return res.json({message:"please enter valid token"})
         }
-        res.json({status:"ok",data:userData})
+        res.json({success:true,data:userData})
     } catch (error) {
         return res.status(400).json({ error: "Internal server error", message: error.message })
     }
