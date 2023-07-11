@@ -77,7 +77,7 @@ const deleteFromCart = async (req, res) => {
       }
   
       if (quantity > product.quantity) {
-        return res.status(400).json({ success: false, message: 'Requested quantity exceeds available quantity' });
+        return res.json({ success: false, message: 'Requested quantity exceeds available quantity' });
       }
   
       product.quantity -= quantity;
