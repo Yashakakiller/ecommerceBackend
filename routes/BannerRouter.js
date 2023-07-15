@@ -1,9 +1,15 @@
 const express = require("express");
+const { Banner } = require("../database/models/BannerModel");
+const { getBannerImages, addBannerImage } = require("../controllers/BannerController");
 const bannerRouter = express.Router()
-const { getBanner } = require("../controllers/BannerController");
 
 
 
-bannerRouter.get("/images",getBanner)
 
-module.exports = bannerRouter
+bannerRouter.get("/", getBannerImages  )
+
+
+
+bannerRouter.post("/", addBannerImage  )
+
+module.exports = {bannerRouter}

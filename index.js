@@ -18,7 +18,7 @@ const app = express();
 
 
 
-app.use(bodyparser.json({extended:true , limit:"10mb"}))
+app.use(bodyparser.json({extended:true , limit:"100mb"}))
 app.use(bodyparser.urlencoded({extended:true}))
 app.use(cors())
 

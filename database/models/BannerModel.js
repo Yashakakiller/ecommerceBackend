@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
-const bannerSchema = mongoose.Schema({
-    images: [{
+const bannerSchema =  new  mongoose.Schema({
+    bannerImage: {
         type: String,
         required: true
-    }]
+    }
 })
 
-const banner = mongoose.model("banner",bannerSchema);
+const Banner = mongoose.model("banner",bannerSchema);
 
 module.exports = {
-    banner
+    Banner
 }
