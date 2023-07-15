@@ -8,6 +8,7 @@ const { categoryRouter } = require("./routes/CategoryRoutes");
 const { productRouter } = require("./routes/ProductRoutes");
 const { wishlistRouter } = require("./routes/WishlistRouter");
 const { cartRouter } = require("./routes/CartRouter");
+const { bannerRouter } = require("./routes/BannerRouter");
 
 
 dotenv.config();
@@ -21,12 +22,6 @@ app.use(bodyparser.json({extended:true , limit:"10mb"}))
 app.use(bodyparser.urlencoded({extended:true}))
 app.use(cors())
 
-// const p = Product.create({
-//     category: "Sarees",
-//       img:"https://image.lexica.art/full_jpg/2e9ec1d6-adbd-46ed-a0d3-dc8e8d81b60c",
-//     name: "silk saree",
-//     price: 1000,
-// })
 
 
 
@@ -35,6 +30,7 @@ app.use("/categories",categoryRouter)
 app.use("/products",productRouter)
 app.use("/wishlist",wishlistRouter)
 app.use("/cart",cartRouter)
+app.use("/banner",bannerRouter)
 
 
 app.listen(PORT , ()=>{
