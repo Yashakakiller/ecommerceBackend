@@ -226,7 +226,7 @@ const relatedProducts = async (req, res) => {
     const relatedProducts = await Product.aggregate([
       { $match: { _id: { $ne: id }, category: checkProduct.category } },
       { $sample: { size: 3 } }
-    ]).maxTimeMS(20000);
+    ]);
 
     res.json({ success: true, relatedProducts });
   } catch (error) {
