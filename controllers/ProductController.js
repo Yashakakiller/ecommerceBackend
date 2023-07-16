@@ -225,7 +225,7 @@ const relatedProducts = async (req, res) => {
 
     const relatedProducts = await Product.aggregate([
       { $match: { _id: { $ne: id }, category: checkProduct.category } },
-      { $sample: { size: 3 } }
+      { $sample: { size: 4 } }
     ]);
 
     res.json({ success: true, relatedProducts });
