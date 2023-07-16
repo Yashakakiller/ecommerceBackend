@@ -214,19 +214,25 @@ const singleProduct = async (req,res) => {
 
 
 
-const relatedProducts = async (req,res) => {
+const relatedProducts = async (req, res) => {
   try {
-    const {id} = req.params;
-  const checkProduct = await Product.findById(id).maxTimeMS(20000);
-  if(!checkProduct){
-    return res.json({success:false , message:"No product found"});
-  }
-  const relatedProducts = await Product.find({ _id: { $ne: id } ,category:checkProduct.category}).maxTimeMS(20000);
-  res.json({success:true,relatedProducts})
+    const { id } = req.params;
+    const checkProduct = await Product.findById(id).maxTimeMS(20000);
+
+    if (!checkProduct) {
+      return res.json({ success: false, message: "No product found" });
+    }
+
+    const relatedProducts = await Product.find({ _id: { $ne: id }, category: checkProduct.category })
+      .limit(3) // Limit the result to 5 products
+      .maxTimeMS(20000);
+
+    res.json({ success: true, relatedProducts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-}
+};
+
 
 
 
