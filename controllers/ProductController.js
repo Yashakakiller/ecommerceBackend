@@ -223,9 +223,10 @@ const relatedProducts = async (req, res) => {
       return res.json({ success: false, message: "No product found" });
     }
 
-    const relatedProducts = await Product.find({ _id: { $ne: id }, category: checkProduct.category })
-      .limit(3) // Limit the result to 5 products
-      .maxTimeMS(20000);
+    const relatedProducts = await Product.aggregate([
+      { $match: { _id: { $ne: id }, category: checkProduct.category } },
+      { $sample: { size: 3 } }
+    ]).maxTimeMS(20000);
 
     res.json({ success: true, relatedProducts });
   } catch (error) {
