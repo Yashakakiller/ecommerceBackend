@@ -29,14 +29,14 @@ const getContactRequest = async(req,res) =>{
     }  
 
 
-    mailTransporter.sendMail(details, (err)=>{
+    const info = mailTransporter.sendMail(details, (err)=>{
         if(err){
           console.log("The error is : " + err.message)
         }else{
           console.log("Message is sent ");
         }
       })
-    res.json({success:true,personContact})
+    res.json({success:true,personContact,info})
     } catch (error) {
         res.json({success:false, message:error.message})
     }
