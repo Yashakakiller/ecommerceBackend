@@ -58,13 +58,11 @@ const productContact = async(req,res)=>{
       html: `<h1>Hello ${name}</h1><br /> <h3>We have got response form ${email} regarding Specific Product Requirement...<hr/> We will reach you out soon !</h3>`
     };
 
-    try {
+    
       const info = await mailTransporter.sendMail(details);
-      console.log("Message is sent");
-    } catch (err) {
-      console.log("The error is: " + err.message);
-    }
-
+      
+    
+    res.json({success:true,info})
   } catch (error) {
       res.json({success:false,message:error.message})    
   }
