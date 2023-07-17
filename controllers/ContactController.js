@@ -1,47 +1,44 @@
-const { Contact } = require("../database/models/ContactModel")
+const { Contact } = require("../database/models/ContactModel");
 const nodemailer = require("nodemailer");
 
+const getContactRequest = async (req, res) => {
+  try {
+    const { name, email, message } = await req.body;
 
-
-const getContactRequest = async(req,res) =>{
-    try {
-        const {name , email ,message} = await req.body;
     const personContact = await Contact.create({
-        name,
-        email,
-        message
-    })
+      name,
+      email,
+      message
+    });
 
     const mailTransporter = nodemailer.createTransport({
-        service:"gmail",
-        auth:{
-          user:process.env.ADMIN_EMAIL_ADDRESS,
-          pass:process.env.SMTP_GMAIL_PASSWORD
-        }
-      })
-
+      service: "gmail",
+      auth: {
+        user: `${process.env.ADMIN_EMAIL_ADDRESS}`,
+        pass: `${process.env.SMTP_GMAIL_PASSWORD}`
+      }
+    });
 
     const details = {
-        from:process.env.ADMIN_EMAIL_ADDRESS,
-        to:email,
-        subject:"We have got your Response",
-        html:`<h1>Hello ${name}</h1><br /> <p>Your message is : ${message}</p> <br/><hr/><h3>We Will Contact You As Soon As Possible</h3>`
-    }  
+      from: `${process.env.ADMIN_EMAIL_ADDRESS}`,
+      to: email,
+      subject: "We have received your response",
+      html: `<h1>Hello ${name}</h1><br /> <p>Your message is: ${message}</p> <br/><hr/><h3>We will contact you as soon as possible</h3>`
+    };
 
-
-    const info = mailTransporter.sendMail(details, (err)=>{
-        if(err){
-          console.log("The error is : " + err.message)
-        }else{
-          console.log("Message is sent ");
-        }
-      })
-    res.json({success:true,personContact,info})
-    } catch (error) {
-        res.json({success:false, message:error.message})
+    try {
+      const info = await mailTransporter.sendMail(details);
+      console.log("Message is sent");
+    } catch (err) {
+      console.log("The error is: " + err.message);
     }
-}
 
-module.exports= {
-    getContactRequest
-}
+    res.json({ success: true, personContact });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+module.exports = {
+  getContactRequest
+};
