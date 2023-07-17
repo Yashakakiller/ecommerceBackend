@@ -9,6 +9,7 @@ const { productRouter } = require("./routes/ProductRoutes");
 const { wishlistRouter } = require("./routes/WishlistRouter");
 const { cartRouter } = require("./routes/CartRouter");
 const { bannerRouter } = require("./routes/BannerRouter");
+const { contactRouter } = require("./routes/ContactRouter");
 
 
 dotenv.config();
@@ -31,6 +32,9 @@ app.use("/products",productRouter)
 app.use("/wishlist",wishlistRouter)
 app.use("/cart",cartRouter)
 app.use("/banner",bannerRouter)
+app.use("/contact",contactRouter)
+
+
 
 
 app.listen(PORT , ()=>{
