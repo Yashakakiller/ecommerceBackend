@@ -9,34 +9,42 @@ const productSchema = new mongoose.Schema({
       type:String,
       required:true,
     },
-    img:{
-      type:String,
-      required:true
+    name: {
+      type: String,
+      required: true
     },
-  name: {
-    type: String,
-    required: true
-  },
-  price: {
-    type: Number,
-    required: true
-  },
-  quantity:{
-    type:Number,
-    required:true
-  },
-  desc:{
-    type:String,
-    required:true
-  },
-  dateAdded:{
-    type: Date,
-    default: Date.now
-  },
-  otherImages: [{
-    type: String,
-    required: true
-  }]
+    desc: {
+      type: String,
+      required: true
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    quantity: {
+      type: Number,
+      required: true
+    },
+    shapeDescription: {
+      type: String,
+      required: true
+    },
+    img: {
+      type: String,
+      required: true
+    },
+    images: [{
+      type: String,
+      required:true
+    }],
+    viewCount: {
+      type: Number,
+      default: 0
+    },
+    addedDate: {
+      type: Date,
+      default: Date.now
+    }
   
 });
 

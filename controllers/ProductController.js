@@ -7,11 +7,11 @@ const Category = require("../database/models/CategoryModel");
 
 // Create a new product and associate it with a category
 const createProduct = async (req, res) => {
-  const { category, name,desc,img, price, quantity ,dateAdded,otherImages } = await req.body;
+  const { category, name,desc,shapeDescription,img, price, quantity ,addedDate,images } = await req.body;
 
 
   try {
-    const customDate = new Date(dateAdded);
+    const customDate = new Date(addedDate);
     const categoryCheck = await Category.findOne({ name: category }).maxTimeMS(20000);
     if (!categoryCheck) {
       return res.json({ success: false, message: 'Category not found' });
@@ -21,7 +21,7 @@ const createProduct = async (req, res) => {
     if (productCheck) {
       return res.json({ success: false, message: 'Product already exists' });
     }
-    const newProduct = await Product.create({ category: categoryCheck._id, name, desc ,img ,price, quantity,categoryName:categoryCheck.name,dateAdded: customDate,otherImages});
+    const newProduct = await Product.create({ category: categoryCheck._id, name, desc ,shapeDescription,img ,price, quantity,categoryName:categoryCheck.name,addedDate: customDate,images});
     res.status(200).json({ success: true, product: newProduct, message: 'New Product created' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -41,7 +41,7 @@ const newArrivals = async(req,res) => {
 
   // Query to find products added in the last 7 days
   const query = {
-    dateAdded: { $gte: sevenDaysAgo }
+    addedDate: { $gte: sevenDaysAgo }
   };
 
   // Find products based on the query
@@ -156,7 +156,7 @@ const randomProduct = async (req, res) => {
 
    
     const query = {
-      dateAdded: { $lte: sevenDaysAgo }
+      addedDate: { $lte: sevenDaysAgo }
     };
 
     const categories = await Category.find({}).maxTimeMS(20000); // Get all categories
@@ -214,25 +214,19 @@ const singleProduct = async (req,res) => {
 
 
 
-const relatedProducts = async (req, res) => {
+const relatedProducts = async (req,res) => {
   try {
-    const { id } = req.params;
-    const checkProduct = await Product.findById(id).maxTimeMS(20000);
-
-    if (!checkProduct) {
-      return res.json({ success: false, message: "No product found" });
-    }
-
-    const relatedProducts = await Product.find({ _id: { $ne: id }, category: checkProduct.category })
-      .limit(4) // Limit the result to 5 products
-      .maxTimeMS(20000);
-
-    res.json({ success: true, relatedProducts });
+    const {id} = req.params;
+  const checkProduct = await Product.findById(id).maxTimeMS(20000);
+  if(!checkProduct){
+    return res.json({success:false , message:"No product found"});
+  }
+  const relatedProducts = await Product.find({ _id: { $ne: id } ,category:checkProduct.category}).maxTimeMS(20000);
+  res.json({success:true,relatedProducts})
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-};
-
+}
 
 
 
