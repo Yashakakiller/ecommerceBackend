@@ -221,7 +221,7 @@ const relatedProducts = async (req,res) => {
   if(!checkProduct){
     return res.json({success:false , message:"No product found"});
   }
-  const relatedProducts = await Product.find({ _id: { $ne: id } ,category:checkProduct.category}).maxTimeMS(20000);
+  const relatedProducts = await Product.find({ _id: { $ne: id } ,category:checkProduct.category}).limit(4).maxTimeMS(20000);
   res.json({success:true,relatedProducts})
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
