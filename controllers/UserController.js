@@ -145,7 +145,7 @@ const userLogin = async (req, res) => {
         }
         const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET_KEY );
 
-        res.json({ status: "ok", data: token ,user })
+        res.json({ success: true, data: token ,user })
     } catch (error) {
         return res.status(400).json({ error: "Internal server error", message: error.message })
     }
