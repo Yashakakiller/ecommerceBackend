@@ -141,11 +141,11 @@ const userLogin = async (req, res) => {
         const comparePassword = await bcrypt.compare(password, user.password);
 
         if (!comparePassword) {
-            return res.json({ message: "Please enter correct credentials" });
+            return res.json({ success:false,message: "Please enter correct credentials" });
         }
         const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET_KEY );
 
-        res.json({ success: true, data: token ,user })
+        res.json({ status: "ok", data: token ,user })
     } catch (error) {
         return res.status(400).json({ error: "Internal server error", message: error.message })
     }
