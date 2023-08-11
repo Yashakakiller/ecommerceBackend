@@ -38,5 +38,5 @@ app.use("/contact",contactRouter)
 
 
 app.listen(PORT , ()=>{
-    console.log("server started" + PORT)
+    console.log("server started on PORT " + PORT)
 })
