@@ -211,11 +211,6 @@ const singleProduct = async (req,res) => {
 
 
 
-
-
-
-
-
 const relatedProducts = async (req,res) => {
   try {
     const {id} = req.params;
@@ -229,13 +224,6 @@ const relatedProducts = async (req,res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
-
-
-
-
-
-
-
 
 
 
