@@ -199,6 +199,7 @@ const singleProduct = async (req,res) => {
   if(!checkProduct){
     return res.json({success:false , message:"No product found"});
   }
+  checkProduct.viewCount+=1
   res.json({success:true , product:checkProduct})
     
   } catch (error) {
