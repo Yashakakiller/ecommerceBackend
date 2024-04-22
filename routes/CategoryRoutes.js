@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllCategories , createCategory , singleCategory } = require("../controllers/CategoryController");
+const { getAllCategories , createCategory , singleCategory, deleteCategory } = require("../controllers/CategoryController");
 const categoryRouter = express.Router() ;
 
 
@@ -15,6 +15,8 @@ categoryRouter.post("/create/category",createCategory)
 categoryRouter.get("/singlecategory/:id",singleCategory)
 
 
+// route for delete a category
+categoryRouter.delete("/delete/:id",deleteCategory)
 
 
 
