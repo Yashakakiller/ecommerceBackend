@@ -13,6 +13,7 @@ const createProduct = async (req, res) => {
   try {
     const customDate = new Date(addedDate);
     const categoryCheck = await Category.findOne({ name: category }).maxTimeMS(20000);
+    console.log(categoryCheck)
     if (!categoryCheck) {
       return res.json({ success: false, message: 'Category not found' });
     }

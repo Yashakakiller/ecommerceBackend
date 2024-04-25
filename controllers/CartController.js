@@ -4,10 +4,10 @@ const Product = require("../database/models/ProductModel")
 
 const addToCart = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { _id, quantity } =await req.body;
+    const { id } = req.params;//user
+    const { _id, quantity } =await req.body;//prodcut
 
-    const userCheck = await User.findById(id).maxTimeMS(20000);
+    const userCheck = await User.findById(id).maxTimeMS(20000); // user jo login apne cart mei add
     if (!userCheck) {
       return res.json({ success: false, message: "User Not Found" });
     }
@@ -18,7 +18,7 @@ const addToCart = async (req, res) => {
         .json({ success: false, message: "Product already in cart" });
     }
 
-    const cartItem = _id;
+    const cartItem = _id;// product_id
     userCheck.cart.unshift(cartItem);
     await userCheck.save();
 
@@ -35,7 +35,7 @@ const addToCart = async (req, res) => {
 
 const deleteFromCart = async (req, res) => {  
   try {
-    const { id, _id } = req.params;
+    const { id, _id } = req.params; // first id => user , second id => product
     console.log(req.params)
 
     const userCheck = await User.findById(id).maxTimeMS(20000);
@@ -47,7 +47,7 @@ const deleteFromCart = async (req, res) => {
       return res.status(400).json({ error: 'Product not found in cart' });
     }
 
-    userCheck.cart.pull(_id);
+    userCheck.cart.pull(_id);// product remove 
     await userCheck.save();
 
     res.json({ success: true, message: 'Product removed from cart' });
@@ -62,8 +62,8 @@ const deleteFromCart = async (req, res) => {
 
   const placeOrder = async (req, res) => {
     try {
-      const {id} = req.params;
-      const { _id, quantity } = await req.body;
+      const {id} = req.params; // user id
+      const { _id, quantity } = await req.body; // product id , quantity
 
       const user = await User.findOne({_id:id});
       if(!user){
