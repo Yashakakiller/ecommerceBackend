@@ -124,16 +124,16 @@ const deleteProduct = async (req, res) => {
 const allProducts = async (req, res) => {
   const { page  } = req.query;
   const pageNumber = parseInt(page) || 1;
-  const limitNumber = 10;
+  const limitNumber = 10; // NO OF PRODUCTS IN SINGLE PAGE
 
   try {
     
-    const totalCount = await Product.countDocuments();
-    const totalPages = Math.ceil(totalCount / limitNumber);
+    const totalCount = await Product.countDocuments(); // fetch all product
+    const totalPages = Math.ceil(totalCount / limitNumber); // total pages
 
     const products = await Product.find()
       .skip((pageNumber - 1) * limitNumber)
-      .limit(limitNumber).maxTimeMS(20000);
+      .limit(limitNumber).maxTimeMS(20000); //This part of the code skips a certain number of documents based on the current page number and the limit of documents per page. For example, if pageNumber is 1 and limitNumber is 10, it will skip 0 documents. If pageNumber is 2, it will skip 10 documents (i.e., it will start from the 11th document). This is typically used for pagination.
 
     res.json({ success: true, products, totalPages });
   } catch (error) {
